@@ -1,10 +1,18 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 import Counter from '../features/counter/Counter'
 import styles from '../styles/Home.module.css'
+import {  useQuery } from "react-query";
 
 const IndexPage: NextPage = () => {
+  const { isLoading, error, data, isFetching } = useQuery("repoData", () =>
+    fetch(
+      "https://api.github.com/repos/tannerlinsley/react-query"
+    ).then((res) => res.json())
+  );
   return (
     <div className={styles.container}>
       <Head>
@@ -56,6 +64,19 @@ const IndexPage: NextPage = () => {
           </a>
         </span>
       </header>
+      <Container maxWidth="sm">
+      <Box sx={{ my: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom></Typography>
+        <h1>{data?.name}</h1>
+      <p>{data?.description}</p>
+      <strong>👀 {data?.subscribers_count}</strong>{" "}
+      <strong>✨ {data?.stargazers_count}</strong>{" "}
+      <strong>🍴 {data?.forks_count}</strong>
+      <div>{isFetching ? "Updating..." : ""}</div>
+
+
+      </Box>
+    </Container>
     </div>
   )
 }
